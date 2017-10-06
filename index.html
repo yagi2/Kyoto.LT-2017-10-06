@@ -1,0 +1,528 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Getting started with Kotlin</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<!-- 以下の1行追加するとソースコードに対するSyntax highlightがつく -->
+		<pre style="display:none"><code></code></pre>
+		<div class="reveal">
+			<div class="slides">
+				<section data-markdown>
+					<textarea data-template>
+						# Getting started with Kotlin
+						<br>
+						2017/10/06  
+						yagi2
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## About Me
+						- 名前：青柳 樹（あおやぎ いつき）  
+						- エイリアス：yagi2（やぎにい）  
+						- Twitter：[magical_reisen](https://twitter.com/magical_reisen)  
+						<br>
+						- 普段はAndroidアプリ開発してます  
+						<br>  
+						- 趣味はアニメとFF14
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## はなすこと
+						- About Kotlin  
+						- Getting started with Kotlin  
+						- Kotlin for Android Application  
+						- Kotlin for Server Side Applicaton  
+					</textarea>
+				</section>
+
+				<section data-markdown data-background-image="image/kotori.png">>
+					<textarea data-template>
+						## Kotlinとは
+						- JetBrains社が開発した最近よく聞く新しい言語（1.0は2016/2/15）
+
+						- GoogleがGoogle I/O 2017でAndroidの開発言語として公式に追加
+
+						- Javaのもどかしいところをいい感じにしていて気持ちいい言語
+						<br>
+						<font size="5">※Kotlin1.1.51時点でのスライドです</font><br>
+						<font size="5">1.1.4→1.1.50になってビビるKotlin使い達</font>
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの主な特徴（機能）
+						#### 型推論付き静的型付け
+						```Kotlin
+						val num  = 0   // Int型
+						val dNum = 0.0 // Double型
+						val fNum = 0f  // Float型
+
+						// valは再代入不可、varは再代入可
+						var sum: Int // 明示的な型宣言
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの主な特徴（機能）
+						#### Nullable types & Non-Null types
+						```Kotlin
+						var message: String = "Hello Kotlin!"
+						message = null // コンパイルエラー
+
+						var name: String? = "Andrey"
+						name = null
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの主な特徴（機能）
+						#### smart cast
+						```Kotlin
+						val message: String? = "Hello"
+
+						message?.let {
+							println(it.toUpperCase()) // HELLO
+						}
+						
+						val list: List<Any> = listOf(1, 'a', false)
+						list.forEach { item -> 
+							val result: Any? = when (item) {
+								is Int -> item + Item
+								is Char -> item.toUpperCase()
+								is Boolean -> item.not()
+							}
+							println(result) // -> 2, A, true
+						}
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの主な特徴（機能）
+						#### SAM(Single Abstract Method)変換
+
+						Java
+						```java
+						button.setOnClickListener(new View.OnClickListener {
+							@Override
+							void onClick(View view) {
+								Toast.makeText(context, "Toast!", Toast.LENGTH_SHORT);
+							}
+						})
+						```
+
+						Kotlin
+						```Kotlin
+						button.setOnClickListener { view ->
+							Toast.makeText(context, "Toast!", Toast.LENGTH_SHORT)
+						}
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown data-separator-vertical="^\n\n">
+					<textarea data-template>
+						## Kotlinの主な特徴（機能）
+						#### 拡張メソッド
+
+						```Kotlin
+						val num:Int = 3
+						println(num * num) // 9
+
+						// 既に用意されている型にメソッドを生やせる
+						fun Int.square(): Int = this * this
+
+						println(num.square()) // 9
+						```
+
+
+
+						## Kotlinの主な特徴（機能）
+						#### 拡張メソッド
+						```kotlin
+						// ジェネリクスにも生やせる
+						fun <T> List<T>.filterEvenIndex(): List<T> {
+							return withIndex()
+									.filter { it.index % 2 == 0 }
+									.map { it.value }
+						}
+
+						val nums = listOf(1, 2, 3, 4, 5)
+						println(nums.filterEvenIndex()) // [1, 3, 5]
+
+						val chars = listOf('a', 'b', 'c', 'd', 'e')
+						println(chars.filterEvenIndex()) // [a, c, e]
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの主な特徴（機能）
+						#### オペレーターオーバーロード
+						<font size="6">[Kotlin - Operator overloading](https://kotlinlang.org/docs/reference/operator-overloading.html)</font>
+						```Kotlin
+						class Rational(val numerator: Int, val denominator: Int) {
+							operator fun plus(that: Rational) =
+								Rational(
+									numerator * that.denominator +
+									that.numerator * denominator,
+
+									denominator * that.denominator
+								)
+						}
+
+						val half = Rational(1, 2)
+						val quator = Rational(1, 4)
+
+						println(half + quator) // == Rational(6, 8)
+						```
+					</textarea>
+				</section>
+
+				<section data-markdown>
+					<textarea data-template>
+						## つまり
+						
+						<p class="fragment fade-up">
+							Javaと比較してめちゃくちゃ短くかける  
+							（短く≠ショートコーディング）  
+						</p>
+					</textarea>
+				</section>
+				
+				<section data-markdown data-background-image="image/java.png">>
+					<textarea data-template>
+						# Getting started with Kotlin
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの学び方
+						- [Kotlinスタートブック](https://www.amazon.co.jp/dp/4865940391/ref=cm_sw_r_tw_dp_x_3FB0zbBEME21Y)  
+						<br>
+						- 通称：赤べこ本  
+						<br>
+						Kotlinの基本的な使い方からAndroidアプリでのKotlinの使い方がまとまっている良書。  
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの学び方
+						- [Kotlin Webアプリケーション 新しいサーバサイドプログラミング](https://www.amazon.co.jp/dp/4865940669/ref=cm_sw_r_tw_dp_x_MFB0zbVWMKD9R)  
+						<br>
+						- 通称：黒べこ本（？）  
+						- ✨今日（10/6）発売✨  
+						<br>
+						Androidアプリ開発にとどまらず、Spark FrameworkとかSpringでのWebアプリケーションを開発する際のサポートブック。
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlinの学び方
+						- [Kotlinイン・アクション](https://www.amazon.co.jp/dp/4839961743/ref=cm_sw_r_tw_dp_x_fGB0zb2P04NXM)  
+						<br>
+						- [Kotlin in Action](https://www.amazon.com/dp/1617293296/ref=cm_sw_r_tw_dp_x_EGB0zb9MQGWA4)の日本語訳書  
+						- 今月末（10/31）発売予定  
+						<br>
+						Kotlinを使う上でのバイブル。これ1冊持っておけばとりあえず大丈夫的な本。
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## いきなり3冊は多すぎる
+						- どれを読めばいいかは[たろうさん](https://twitter.com/ngsw_taro)が紹介している  
+						[黒べこ本の話 + Ktor試してみた #m3kt by Taro Nagasawa - page 9](https://speakerdeck.com/ntaro/hei-bekoben-falsehua-plus-ktorshi-sitemita-number-m3kt?slide=9)
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## なんなら無料で
+						- [Kotlin Koans](https://kotlinlang.org/docs/tutorials/koans.html)  
+						Kotlin公式で出ているチュートリアルリポジトリ  
+						IntelliJで開いてテストに通るコードを書いてテストを走らせて正誤する感じ  
+						<br>  
+						- [Kotlin 助走読本](https://drive.google.com/file/d/0Bylpznm149-gTGRjOFRkWm9PODg/view)  
+						日本Kotlinユーザグループによる無料のKotlin入門書（PDF)
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlin for Android Application
+						### [Kotlin Android Extensions](https://kotlinlang.org/docs/tutorials/android-plugin.html)
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlin Android Extensions
+						- `findViewById()` とさよなら
+						- `Parcelable` がアノテーション1つ
+					</textarea>
+				</section>
+				
+				<section data-markdown data-separator-vertical="^\n\n">
+					<textarea data-template>
+						## Kotlin Android Extensions
+						### `findViewById()` とさよならできる  
+						
+						### Java
+						```Java
+						private TextView textView = findViewById(R.id.text_view)
+						textView.setText("Java!")
+						```
+						
+						### Kotlin with Android Extensions
+						```Kotlin
+						text_view.text = "Kotlin!"
+						```
+						
+						
+						## much better
+						### Layout
+						```XML
+						<TextView
+								android:id="@+id/textView"
+								...
+						```
+						
+						### Kotlin
+						``` Kotlin
+						textView.text = "Kotlin!"
+						```
+						
+						
+						## use DataBinding
+						### Laytout
+						```XML
+						<TextView
+								android:id="@+id/text_view"
+								...
+						```
+						### Kotlin
+						```
+						lateinit var binding: ActivityMainBinding
+						
+						override fun onCreate(savedInstanceState: Bundle?) {
+							super.onCreate(savedInstanceState)
+							binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+							
+							binding.textView.text = "Kotlin!"
+						}
+						```
+					</textarea>
+				</section>
+				
+				<section data-markdown data-separator-vertical="^\n\n">
+					<textarea data-template>
+						## Kotlin Android Extensions
+						### `Parcelable` がアノテーション1つ
+						
+						### Java 
+						```Java
+						public class MyParcelable implements Parcelable {  
+							private int data;  
+							
+							public int describeContents() {
+								return 0;
+							}  
+							
+							public void writeToParcel(Parcel out, int flags) { 
+								out.writeInt(mData);
+							}  
+							
+							public static final Parcelable.Creator<MyParcelable> CREATOR  
+								= new Parcelable.Creator<MyParcelable>() {  
+									public MyParcelable createFromParcel(Parcel in) {
+										return new MyParcelable(in);  
+									}  
+									
+									public MyParcelable[] newArray(int size) {  
+										return new MyParcelable[size];
+									}
+							};
+								
+							private MyParcelable(Parcel in) {
+								mData = in.readInt();
+							}
+						}  
+						```
+						
+						
+						## Kotlin
+						```Kotlin
+						data class MyParcelable(
+							val data: Int
+						) : Parcelable {
+							
+							constructor(parcel: Parcel) : this(parcel.readInt()) {}
+							
+							override fun writeToParcel(parcel: Parcel, flags: Int) {
+								parcel.writeInt(data)
+							}
+							
+							override fun describeContents(): Int {
+								return 0
+							}
+							
+							companion object CREATOR : Parcelable.Creator<MyParcelable> {
+								override fun createFromParcel(parcel: Parcel): MyParcelable {
+									return MyParcelable(parcel)
+								}
+								
+								override fun newArray(size: Int): Array<MyParcelable?> {
+									return arrayOfNulls(size)
+								}
+							}
+						}
+						```
+						
+						
+						## Kotlin Android Extensions
+						```Kotlin
+						@Parcelize
+						data class MyParcelable(val data: Int) : Parcelable
+						```
+						
+						
+						### 詳しい記事
+						[Kotlin Android Extensions: Say goodbye to findViewById](https://antonioleiva.com/kotlin-android-extensions/)
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Kotlin for Server Side Application  
+						- [ktor](https://github.com/Kotlin/ktor)
+						- [Spring Framework](https://github.com/spring-projects/spring-framework)
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Ktor
+						Kotlin公式のFramework、サクッと最小限の労力で作れることがウリ
+						
+						```Kotlin
+						fun main(args: Array<String>) {
+							embeddedServer(Netty, 8080) {
+								routing {
+									get("/") {
+										call.respondText("Hello, world!", ContentType.Text.Html)
+									}
+								}
+							}.start(wait = true)
+						}
+						```
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Spring Framework  
+						言わずと知れたJavaでのWebアプリケーションFramework  
+						つい最近のv5.0で正式にKotlin対応が行われた  
+						<br>
+						5未満でもKotlinは使える
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Demo
+						[Spring Initializer](https://start.spring.io)を使って  
+						Kotlin + Spring Boot なGradle projectを作って  
+						postgresqlのデータをGETできるAPIサーバを動かす
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## Demo
+						そのAPIに100％KotlinのAndroidアプリから繋ぐ
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						😊Everything is Kotlin😊
+					</textarea>
+				</section>
+				
+				<section data-markdown>
+					<textarea data-template>
+						## おまけ
+						Spring BootでのAPIの作り方は長くなりそうなのでブログにまとめています  
+						  
+						[やぎ小屋 | KotlinとSpring Bootを使ってサクッと叩けるAPIを作る](https://blog.yagi2.com/2017/10/04/spring-boot-kotlin.html)  
+					</textarea>
+				</section>
+				
+				<section data-markdown data-background-image="image/kotori-2.png">>
+					<textarea data-template>
+						🐤おしまい🐤
+					</textarea>
+				</section>
+				
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				progress: true,
+				controls: false,
+				slideNumber: true,
+				history: true,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'socket.io/socket.io.js', async: true },
+					{ src: 'plugin/notes-server/client.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
